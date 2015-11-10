@@ -1,0 +1,5 @@
+.idea
+target
+databases
+src/main/webapp/bower_components
+
