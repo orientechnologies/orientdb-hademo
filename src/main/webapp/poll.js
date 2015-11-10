@@ -3,22 +3,17 @@
  var chart = c3.generate({
     data: {
         columns: [
-            ['data', 0]
+            ['completed', 0],
+            ['empty', 360]
         ],
-        type: 'gauge',
-        onclick: function (d, i) { console.log("onclick", d, i); },
-        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-    },
-    gauge: {
+        type: 'pie',
+        colors: {
+            empty: '#ffffff',
+          },
+
 
     },
-    color: {
-        pattern: ['#FF0000', '#F97600', '#F6C600', '#60B044'], // the three color levels for the percentage values.
-        threshold: {
-            values: [30, 60, 90, 100]
-        }
-    },
+
     size: {
         height: 180
     }
@@ -36,11 +31,11 @@ var poll = function(){
     if (xhttp.readyState == 4 && xhttp.status == 200) {
         var obj = JSON.parse(xhttp.responseText);
 
-        document.getElementById('text').innerHTML = obj.count + "/" + obj.limit;
-        var percentage = obj.count * 100 / obj.limit;
-
+        document.getElementById('text').innerHTML = obj.count ;
+        var percentage =    (obj.count) % 360;
+         var toLoad = 360 - percentage;
           chart.load({
-                columns: [['data', percentage]]
+                columns: [['empty', toLoad],['completed', percentage]]
             });
     }
 }

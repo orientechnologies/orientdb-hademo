@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("counts")
 public class CountController {
 
-  public static int         limit = 1000;
   @Autowired
   protected OrientDBFactory factory;
 
@@ -30,7 +29,6 @@ public class CountController {
 
     Count count = new Count();
     count.setCount(v);
-    count.setLimit(limit);
     return new ResponseEntity(count, HttpStatus.OK);
   }
 }

@@ -1,11 +1,11 @@
 package com.orientechnologies.spring.boot.daemon;
 
 import com.orientechnologies.orient.core.sql.OCommandSQL;
+import com.orientechnologies.spring.boot.OrientDBFactory;
+import com.orientechnologies.spring.boot.ServerConfig;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-
-import com.orientechnologies.spring.boot.OrientDBFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -16,17 +16,19 @@ import java.util.UUID;
 @Component
 public class InsertDaemon {
 
-  public static int       limit = 1000;
   @Autowired
   private OrientDBFactory factory;
+
+  @Autowired
+  ServerConfig            server;
 
   @Scheduled(fixedDelay = 1000)
   public void insert() {
 
     OrientGraphNoTx graphtNoTx = factory.getGraphtNoTx();
-    long v = graphtNoTx.countVertices("V");
-    if (v < limit) {
-      graphtNoTx.command(new OCommandSQL("insert into v set uuid = ?")).execute(UUID.randomUUID().toString());
-    }
+
+    graphtNoTx.command(new OCommandSQL("insert into v set uuid = ?, port = ?")).execute(UUID.randomUUID().toString(),
+        server.getPort());
+
   }
 }
