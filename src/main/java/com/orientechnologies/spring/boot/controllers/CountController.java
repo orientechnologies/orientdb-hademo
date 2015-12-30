@@ -25,10 +25,15 @@ public class CountController {
   public ResponseEntity<Count> getCount() {
 
     OrientGraphNoTx graphtNoTx = factory.getGraphtNoTx();
-    long v = graphtNoTx.countVertices("V");
+    try {
+      long v = graphtNoTx.countVertices("V");
 
-    Count count = new Count();
-    count.setCount(v);
-    return new ResponseEntity(count, HttpStatus.OK);
+      Count count = new Count();
+      count.setCount(v);
+      return new ResponseEntity(count, HttpStatus.OK);
+
+    } finally {
+      graphtNoTx.shutdown();
+    }
   }
 }
