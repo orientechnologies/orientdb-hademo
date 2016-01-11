@@ -8,7 +8,11 @@
 
     <style>
         h1 {
-            text-align: center;
+        text-align: center;
+        }
+        .column {
+        width : 50%;
+        float : left;
         }
     </style>
 </head>
@@ -21,6 +25,19 @@
 <div>
     <h1 id="text"></h1>
 </div>
+<div>
+    <div class="column">
+        <div id="chartWrite">
+        </div>
+        <h1 id="writeText"></h1>
+    </div>
+    <div class="column">
+        <div id="chartRead">
+        </div>
+        <h1 id="readText"></h1>
+    </div>
+</div>
+
 <script src="bower_components/d3/d3.js"></script>
 <script src="bower_components/c3js-chart/c3.js"></script>
 

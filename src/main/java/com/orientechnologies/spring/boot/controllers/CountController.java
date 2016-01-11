@@ -1,8 +1,8 @@
 package com.orientechnologies.spring.boot.controllers;
 
 import com.orientechnologies.spring.boot.OrientDBFactory;
+import com.orientechnologies.spring.boot.daemon.InsertDaemon;
 import com.orientechnologies.spring.boot.dto.Count;
-import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,21 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class CountController {
 
   @Autowired
+  protected InsertDaemon    insertDaemon;
+
+  @Autowired
   protected OrientDBFactory factory;
 
   @RequestMapping(method = RequestMethod.GET)
   public ResponseEntity<Count> getCount() {
 
-    OrientGraphNoTx graphtNoTx = factory.getGraphtNoTx();
-    try {
-      long v = graphtNoTx.countVertices("V");
+    return new ResponseEntity(insertDaemon.getCounter(), HttpStatus.OK);
 
-      Count count = new Count();
-      count.setCount(v);
-      return new ResponseEntity(count, HttpStatus.OK);
-
-    } finally {
-      graphtNoTx.shutdown();
-    }
   }
 }

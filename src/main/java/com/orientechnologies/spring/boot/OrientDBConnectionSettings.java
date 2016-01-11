@@ -14,6 +14,9 @@ public class OrientDBConnectionSettings {
   private String usr;
   private String pwd;
 
+  private String rootUser;
+  private String rootPwd;
+
   public String getUrl() {
     return url;
   }
@@ -36,5 +39,22 @@ public class OrientDBConnectionSettings {
 
   public void setPwd(String pwd) {
     this.pwd = pwd;
+  }
+
+
+  public String getRootPwd() {
+    return rootPwd;
+  }
+
+  public void setRootPwd(String rootPwd) {
+    this.rootPwd = rootPwd;
+  }
+
+  public String getRootUser() {
+    return rootUser;
+  }
+
+  public void setRootUser(String rootUser) {
+    this.rootUser = rootUser;
   }
 }

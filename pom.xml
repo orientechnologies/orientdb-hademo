@@ -10,7 +10,7 @@
 
 
     <properties>
-        <orientdb.version>2.1.8-SNAPSHOT</orientdb.version>
+        <orientdb.version>2.1.9</orientdb.version>
         <spring-boot.version>1.1.8.RELEASE</spring-boot.version>
     </properties>
     <dependencies>

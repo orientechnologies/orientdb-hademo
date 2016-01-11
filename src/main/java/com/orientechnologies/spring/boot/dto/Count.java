@@ -7,6 +7,9 @@ public class Count {
 
   long count;
   long limit;
+  
+  long writeSec;
+  long readSec;
 
   public long getCount() {
     return count;
@@ -22,5 +25,21 @@ public class Count {
 
   public long getLimit() {
     return limit;
+  }
+
+  public long getWriteSec() {
+    return writeSec;
+  }
+
+  public void setWriteSec(long writeSec) {
+    this.writeSec = writeSec;
+  }
+
+  public long getReadSec() {
+    return readSec;
+  }
+
+  public void setReadSec(long readSec) {
+    this.readSec = readSec;
   }
 }
