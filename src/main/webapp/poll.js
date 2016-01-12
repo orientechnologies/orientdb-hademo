@@ -2,18 +2,18 @@
     bindto : "#chart",
     data: {
         columns: [
-            ['completed', 0],
-            ['empty', 360]
+            ['loaded', 0],
+            ['notLoaded', 1000000]
         ],
-        type: 'pie',
+        type: 'donut',
         colors: {
-            empty: '#ffffff',
+            notLoaded: '#eeeeee',
           },
 
     },
 
     size: {
-        height: 180
+        height: 220
     }
 
 });
@@ -69,10 +69,11 @@ var poll = function(){
         var obj = JSON.parse(xhttp.responseText);
 
         document.getElementById('text').innerHTML = obj.count ;
-        var percentage = ( (obj.count) / 100 ) % 360;
-         var toLoad = 360 - percentage;
+        var loaded = ( (obj.count) % 1000000 );
+
+         var toLoad = 1000000 - loaded;
           chart.load({
-                columns: [['empty', toLoad],['completed', percentage]]
+                columns: [['notLoaded', toLoad],['loaded', loaded]]
             });
 
             var d = new Date();

@@ -1,14 +1,15 @@
 package com.orientechnologies.spring.boot.controllers;
 
-import com.orientechnologies.spring.boot.OrientDBFactory;
-import com.orientechnologies.spring.boot.daemon.InsertDaemon;
-import com.orientechnologies.spring.boot.dto.Count;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.orientechnologies.spring.boot.OrientDBFactory;
+import com.orientechnologies.spring.boot.daemon.CounterDaemon;
+import com.orientechnologies.spring.boot.dto.Count;
 
 /**
  * Created by Enrico Risa on 17/10/15.
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CountController {
 
   @Autowired
-  protected InsertDaemon    insertDaemon;
+  protected CounterDaemon   counterDaemon;
 
   @Autowired
   protected OrientDBFactory factory;
@@ -27,7 +28,7 @@ public class CountController {
   @RequestMapping(method = RequestMethod.GET)
   public ResponseEntity<Count> getCount() {
 
-    return new ResponseEntity(insertDaemon.getCounter(), HttpStatus.OK);
+    return new ResponseEntity(counterDaemon.getCounter(), HttpStatus.OK);
 
   }
 }

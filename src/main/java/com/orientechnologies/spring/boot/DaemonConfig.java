@@ -7,17 +7,16 @@ import org.springframework.stereotype.Component;
  * Created by Enrico Risa on 10/11/15.
  */
 @Component
-@ConfigurationProperties(prefix = "server")
-public class ServerConfig {
+@ConfigurationProperties(prefix = "daemon")
+public class DaemonConfig {
 
-  private int port;
+  public int threads;
 
-  public int getPort() {
-    return port;
+  public int getThreads() {
+    return threads;
   }
 
-  public void setPort(int port) {
-    this.port = port;
+  public void setThreads(int threads) {
+    this.threads = threads;
   }
-
 }

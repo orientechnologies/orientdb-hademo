@@ -14,8 +14,9 @@ public class ReadDaemon implements Runnable {
   AtomicLong              readCounter = new AtomicLong(0);
   private OrientDBFactory factory;
 
-  public ReadDaemon(OrientDBFactory factory) {
+  public ReadDaemon(OrientDBFactory factory, AtomicLong readCounter) {
     this.factory = factory;
+    this.readCounter = readCounter;
   }
 
   public Long getReadCounter() {
