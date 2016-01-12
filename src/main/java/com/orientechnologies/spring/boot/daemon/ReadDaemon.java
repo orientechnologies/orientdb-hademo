@@ -9,10 +9,12 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Created by Enrico Risa on 10/11/15.
  */
-public class ReadDaemon implements Runnable {
+public class ReadDaemon extends Thread {
 
-  AtomicLong              readCounter = new AtomicLong(0);
-  private OrientDBFactory factory;
+  AtomicLong               readCounter = new AtomicLong(0);
+  private OrientDBFactory  factory;
+  private volatile boolean running     = true;
+  private Object           lock        = new Object();
 
   public ReadDaemon(OrientDBFactory factory, AtomicLong readCounter) {
     this.factory = factory;
@@ -34,12 +36,32 @@ public class ReadDaemon implements Runnable {
 
     try {
       while (true) {
-        graphtNoTx.command(new OCommandSQL("select count(*) from V")).execute();
-        readCounter.incrementAndGet();
+        if (running) {
+          graphtNoTx.command(new OCommandSQL("select count(*) from V")).execute();
+          readCounter.incrementAndGet();
+        } else {
+          synchronized (lock) {
+            lock.wait();
+          }
+
+        }
       }
+    } catch (InterruptedException e) {
+
     } finally {
 
       graphtNoTx.shutdown();
     }
+  }
+
+  public void pauseRead() {
+    running = false;
+  }
+
+  public void resumeRead() {
+    synchronized (lock) {
+      lock.notifyAll();
+    }
+    running = true;
   }
 }

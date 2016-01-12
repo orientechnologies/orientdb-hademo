@@ -12,11 +12,13 @@ import java.util.concurrent.atomic.AtomicLong;
  * Created by Enrico Risa on 10/11/15.
  */
 
-public class InsertDaemon implements Runnable {
+public class InsertDaemon extends Thread {
 
-  private OrientDBFactory factory;
-  private ServerConfig    server;
-  private AtomicLong      writeCounter;
+  private OrientDBFactory  factory;
+  private ServerConfig     server;
+  private AtomicLong       writeCounter;
+  private volatile boolean running = true;
+  private Object           lock    = new Object();
 
   public InsertDaemon(OrientDBFactory factory, ServerConfig server, AtomicLong writeCounter) {
     this.factory = factory;
@@ -31,12 +33,31 @@ public class InsertDaemon implements Runnable {
 
     try {
       while (true) {
-        new ODocument("V").field("uuid", UUID.randomUUID().toString()).field("port", server.getPort()).save();
-        writeCounter.incrementAndGet();
+        if (running) {
+          new ODocument("V").field("uuid", UUID.randomUUID().toString()).field("port", server.getPort()).save();
+          writeCounter.incrementAndGet();
+        } else {
+          synchronized (lock) {
+            lock.wait();
+          }
+        }
       }
+    } catch (InterruptedException e) {
+
     } finally {
       graphtNoTx.shutdown();
     }
 
+  }
+
+  public void pauseWrite() {
+    running = false;
+  }
+
+  public void resumeWrite() {
+    synchronized (lock) {
+      lock.notifyAll();
+    }
+    running = true;
   }
 }

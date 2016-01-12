@@ -125,3 +125,15 @@ var poll = function(){
 }
 
 poll();
+
+
+function changeState(action,state){
+
+ var xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function() {
+
+    }
+    xhttp.open("GET", "counts/" + action + "/" + state, true);
+    xhttp.send();
+}

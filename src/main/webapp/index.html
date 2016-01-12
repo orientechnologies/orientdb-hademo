@@ -7,12 +7,16 @@
     <link rel="stylesheet" href="bower_components/c3js-chart/c3.css"/>
 
     <style>
-        h1 {
+        h1 , h4 {
         text-align: center;
+        margin : 5px;
         }
         .column {
         width : 50%;
         float : left;
+        }
+        .hide {
+
         }
     </style>
 </head>
@@ -30,11 +34,23 @@
         <div id="chartWrite">
         </div>
         <h1 id="writeText"></h1>
+
+        <h4>
+            <a href="javascript:void(0)" onclick="changeState('write',false)">Pause</a>
+            <a href="javascript:void(0)"  onclick="changeState('write',true)" class="hide">Resume</a>
+        </h4>
+
     </div>
     <div class="column">
         <div id="chartRead">
         </div>
         <h1 id="readText"></h1>
+
+        <h4>
+            <a href="javascript:void(0)" onclick="changeState('read',false)">Pause</a>
+            <a href="javascript:void(0)" onclick="changeState('read',true)" class="hide">Resume</a>
+        </h4>
+
     </div>
 </div>
 

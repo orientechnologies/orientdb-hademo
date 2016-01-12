@@ -22,12 +22,14 @@ public class CounterDaemon {
   AtomicLong              writeCounter = new AtomicLong(0);
   AtomicLong              readCounter  = new AtomicLong(0);
 
+  ReadDaemon[]            readThreads;
+  InsertDaemon[]          writeThreads;
+
   @Autowired
   ServerConfig            server;
 
   @Autowired
   DaemonConfig            daemonConfig;
-
 
   protected Count         count        = new Count();
   @Autowired
@@ -44,17 +46,17 @@ public class CounterDaemon {
     }, 1000, 1000);
     int threadsNumber = daemonConfig.getThreads();
 
-    Thread[] readThreads = new Thread[threadsNumber];
-    Thread[] writeThreads = new Thread[threadsNumber];
+    readThreads = new ReadDaemon[threadsNumber];
+    writeThreads = new InsertDaemon[threadsNumber];
 
     for (int i = 0; i < threadsNumber; i++) {
-      readThreads[i] = new Thread(new ReadDaemon(factory, readCounter));
+      readThreads[i] = new ReadDaemon(factory, readCounter);
     }
     for (int i = 0; i < threadsNumber; i++) {
       readThreads[i].start();
     }
     for (int i = 0; i < threadsNumber; i++) {
-      writeThreads[i] = new Thread(new InsertDaemon(factory, server, writeCounter));
+      writeThreads[i] = new InsertDaemon(factory, server, writeCounter);
     }
 
     for (int i = 0; i < threadsNumber; i++) {
@@ -68,6 +70,48 @@ public class CounterDaemon {
       writeThreads[i].join();
     }
 
+  }
+
+  public void changeState(String action, Boolean state) {
+
+    if ("read".equalsIgnoreCase(action)) {
+
+      if (Boolean.TRUE.equals(state)) {
+        resumeRead();
+      } else {
+        pauseRead();
+      }
+    } else if ("write".equalsIgnoreCase(action)) {
+      if (Boolean.TRUE.equals(state)) {
+        resumeWrite();
+      } else {
+        pauseWrite();
+      }
+    }
+  }
+
+  public void pauseRead() {
+    for (ReadDaemon readThread : readThreads) {
+      readThread.pauseRead();
+    }
+  }
+
+  public void resumeRead() {
+    for (ReadDaemon readThread : readThreads) {
+      readThread.resumeRead();
+    }
+  }
+
+  public void pauseWrite() {
+    for (InsertDaemon wThread : writeThreads) {
+      wThread.pauseWrite();
+    }
+  }
+
+  public void resumeWrite() {
+    for (InsertDaemon wThread : writeThreads) {
+      wThread.resumeWrite();
+    }
   }
 
   public Count getCounter() {
