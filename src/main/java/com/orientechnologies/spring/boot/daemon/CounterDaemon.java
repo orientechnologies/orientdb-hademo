@@ -19,19 +19,19 @@ import java.util.concurrent.atomic.AtomicLong;
 @Component
 public class CounterDaemon {
 
-  AtomicLong              writeCounter = new AtomicLong(0);
-  AtomicLong              readCounter  = new AtomicLong(0);
+  AtomicLong writeCounter = new AtomicLong(0);
+  AtomicLong readCounter  = new AtomicLong(0);
 
-  ReadDaemon[]            readThreads;
-  InsertDaemon[]          writeThreads;
-
-  @Autowired
-  ServerConfig            server;
+  ReadDaemon[]   readThreads;
+  InsertDaemon[] writeThreads;
 
   @Autowired
-  DaemonConfig            daemonConfig;
+  ServerConfig server;
 
-  protected Count         count        = new Count();
+  @Autowired
+  DaemonConfig daemonConfig;
+
+  protected Count         count = new Count();
   @Autowired
   private OrientDBFactory factory;
 
@@ -123,22 +123,28 @@ public class CounterDaemon {
   }
 
   protected void updateCounter() {
-    System.out.printf("Insert/s [%d] , Read/s [%d] \n", writeCounter.get(), readCounter.get());
-    OrientGraphNoTx graphtNoTx = factory.getGraphtNoTx();
     try {
-      long v = graphtNoTx.countVertices("V");
-      long c = writeCounter.get();
-      long r = readCounter.get();
-      synchronized (count) {
-        count.setCount(v);
-        count.setWriteSec(c);
-        count.setReadSec(r);
-      }
-      writeCounter.set(0);
-      readCounter.set(0);
+      System.out.printf("Insert/s [%d] , Read/s [%d] \n", writeCounter.get(), readCounter.get());
 
-    } finally {
-      graphtNoTx.shutdown();
+      OrientGraphNoTx graphtNoTx = factory.getGraphtNoTx();
+      try {
+        long v = graphtNoTx.countVertices("V");
+        long c = writeCounter.get();
+        long r = readCounter.get();
+        synchronized (count) {
+          count.setCount(v);
+          count.setWriteSec(c);
+          count.setReadSec(r);
+        }
+        writeCounter.set(0);
+        readCounter.set(0);
+      } catch (Throwable e) {
+        e.printStackTrace();
+      } finally {
+        graphtNoTx.shutdown();
+      }
+    } catch (Throwable e) {
+      e.printStackTrace();
     }
   }
 }

@@ -33,17 +33,19 @@ public class InsertDaemon extends Thread {
 
     try {
       while (true) {
-        if (running) {
-          new ODocument("V").field("uuid", UUID.randomUUID().toString()).field("port", server.getPort()).save();
-          writeCounter.incrementAndGet();
-        } else {
-          synchronized (lock) {
-            lock.wait();
+        try {
+          if (running) {
+            new ODocument("V").field("uuid", UUID.randomUUID().toString()).field("port", server.getPort()).save();
+            writeCounter.incrementAndGet();
+          } else {
+            synchronized (lock) {
+              lock.wait();
+            }
           }
+        } catch (Throwable e) {
+          e.printStackTrace();
         }
       }
-    } catch (InterruptedException e) {
-
     } finally {
       graphtNoTx.shutdown();
     }
